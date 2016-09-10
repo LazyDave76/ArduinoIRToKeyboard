@@ -1,0 +1,124 @@
+/*
+      IR Remote Control to Keyboard Adapter by LazyDave76
+
+      This does exactly what it says on the tin, it takes an IR Code
+      from an IR Sensor Module and Presses Keys on the Keyboard.
+
+      This sketch requires an Arduino Leonardo compatible board,
+      It will NOT work with an Arduino UNO or Arduino UNO Clone boards.
+      
+      Default settings are compatible with a £1 remote!
+      Signalex 10 In 1 Remote Control
+      http://www.poundland.co.uk/signalex-10-in-1-remote-control 
+
+  THE REMOTE USES CODE 2151.  HOLD TV TILL LED STAYS ON THEN TAP 2151 **/
+
+
+*/
+
+
+#include <IRremote.h>
+#include <Keyboard.h>
+
+int recvPin = 11;
+IRrecv irrecv(recvPin);
+decode_results  results;
+int lastResult = 0;
+
+
+void  setup ( )
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  Keyboard.begin();
+}
+
+void  loop ( )
+{
+  if (irrecv.decode(&results)) {
+
+
+    if (results.value != lastResult) {
+      Serial.print("IR : ");
+      Serial.print(results.value);
+    }
+
+    sendKeyboard(results);
+    irrecv.resume();
+  }
+}
+
+
+void sendKeyboard(decode_results irCode) {
+  /*
+      You should modify the switch statement in this method if
+      the default settings dont work.
+
+      Use SerialMonitor (Ctrl+Shift+M) to see the values that
+      your Remote Control sends on each key press and replace them.
+
+      Full list of all the 'special keys' (FKeys, Cursors, etc.)
+      https://www.arduino.cc/en/Reference/KeyboardModifiers
+
+      For all other alpha-numeric keys, use ASCII values.
+      http://www.asciitable.com/
+  */
+
+  switch (irCode.value) {
+
+    case 2984         :
+    case 936          : Keyboard.write(KEY_UP_ARROW);     break;
+
+    case 935          :
+    case 2983         : Keyboard.write(KEY_DOWN_ARROW);   break;
+
+    case 2996         :
+    case 948          : Keyboard.write(KEY_LEFT_ARROW);   break;
+
+    case 2999         :
+    case 951          : Keyboard.write(KEY_RIGHT_ARROW);  break;
+
+    case 2982         :
+    case 934          : Keyboard.write(KEY_RETURN);       break;
+
+    case 2955         :
+    case 907          : Keyboard.write(KEY_F8);           break;
+
+    case 1285483597   :
+    case 2317765206   : Keyboard.write(KEY_BACKSPACE);    break;
+
+    case 3026865591   :
+    case 1317029824   : Keyboard.write('+');              break;
+
+    case 136832713    :
+    case 3466416090   : Keyboard.write('-');              break;
+
+    case 1656788642   :
+    case 3492827441   : Keyboard.write('i');              break;
+
+    case 3483193711   :
+    case 187165568    : Keyboard.write(KEY_ESC);          break;
+
+    case 2995         :
+    case 947          : Keyboard.write(' ');              break;
+
+    case 2994         :
+    case 946          : Keyboard.write('x');              break;
+
+    case 2990         :
+    case 942          : Keyboard.write('p');              break;
+
+    case 2956         :
+    case 908          : Keyboard.write('c');              break;
+
+    case 2989         :
+    case 941          : Keyboard.write('.');              break;
+
+    case 2988         :
+    case 940          : Keyboard.write(',');              break;
+  }
+
+  irCode.value = 0;
+  delay(200);
+}
+
