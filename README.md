@@ -8,3 +8,5 @@ You will need an IR Sensor Module.  I used : KY-022 Infrared IR Sensor Receiver 
 
 Signalex version works with a £1 remote, available here:
 http://www.poundland.co.uk/signalex-10-in-1-remote-control
+
+Xbox360 version works with XBOX360 Media Center IR Remote Control
